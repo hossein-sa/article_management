@@ -24,7 +24,7 @@ class DatabaseManager:
         username VARCHAR(50) UNIQUE NOT NULL,
         national_code VARCHAR(20) UNIQUE NOT NULL,
         birthday DATE NOT NULL,
-        password VARCHAR(100) NOT NULL,
+        password VARCHAR(100) NOT NULL
         )"""
 
         create_article_table="""

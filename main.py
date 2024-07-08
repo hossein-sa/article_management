@@ -26,7 +26,7 @@ def main():
             manager.view_articles()
         elif choice == '4':
             if manager.current_user:
-                manager.view_articles()
+                manager.manage_articles()
             else:
                 print("Please login first.")
         elif choice == '5':

@@ -49,20 +49,20 @@ class UserArticleManager:
         while True:
             print("\n1. View my articles")
             print("2. Create new article")
-            print("3. Edit an existing article")
+            print("3. Edit article")
             print("4. Back to main menu")
             choice = input("Enter your choice: ")
 
-            if choice == "1":
-                self.view_articles()
-            elif choice == "2":
+            if choice == '1':
+                self.view_my_articles()
+            elif choice == '2':
                 self.create_article()
             elif choice == '3':
                 self.edit_article()
             elif choice == '4':
                 break
             else:
-                print("Invalid choice. Please try again")
+                print("Invalid choice. Please try again.")
 
     def view_my_articles(self):
         query = "SELECT id, title, summary, content, created_at, is_published FROM articles WHERE user_id = %s"
