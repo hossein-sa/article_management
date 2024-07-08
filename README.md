@@ -60,6 +60,6 @@ Contributions to improve the Article Management System are welcome. Please feel 
 [Specify your license here, e.g., MIT License]
 
 ## Contact
-Hossein Sadeghi - [GitHub](https://github.com/your-github-username)
+Hossein Sadeghi - [GitHub](https://github.com/hossein-sa)
 
 Project Link: https://github.com/hossein-sa/article-management
