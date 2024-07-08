@@ -65,18 +65,18 @@ class UserArticleManager:
                 print("Invalid choice. Please try again.")
 
     def view_my_articles(self):
-        query = "SELECT id, title, summary, content, created_at, is_published FROM articles WHERE user_id = %s"
+        query = "SELECT id, title, summary, is_published FROM articles WHERE user_id = %s"
         self.db.cursor.execute(query, (self.current_user.id,))
         articles = self.db.cursor.fetchall()
         if not articles:
             print("You have no articles.")
         else:
-            for i, article_data in enumerate(articles, 1):
-                article = Article(*article_data, self.current_user.id)
-                print(f"{i}. Title: {article.title}")
-                print(f"    summary: {article.summary}")
-                print(f"    published: {'YES' if article.is_published else 'NO'}")
+            for i, (id, title, summary, is_published) in enumerate(articles, 1):
+                print(f"{i}. Title: {title}")
+                print(f"    Summary: {summary}")
+                print(f"    Published: {'Yes' if is_published else 'No'}")
                 print()
+        return articles
 
     def create_article(self):
         title = input("Enter article title: ")
@@ -88,45 +88,55 @@ class UserArticleManager:
             self.db.cursor.execute(query, values)
             self.db.connection.commit()
             print("Article created successfully")
+            print("Note: The article is not published by default. You can publish it by editing its status.")
         except Error as e:
             print(f"Error creating article: {e}")
 
     def edit_article(self):
-        self.view_my_articles()
-        article_id = int(input("Enter the number of the article you want to edit: "))
-        query = "SELECT id, title, summary, content, created_at, is_published FROM articles WHERE user_id = %s"
-        self.db.cursor.execute(query, (self.current_user.id,))
-        articles = self.db.cursor.fetchall()
+        articles = self.view_my_articles()
+        if not articles:
+            return
 
-        if 1 < article_id <= len(articles):
-            article = Article(*articles[article_id - 1], self.current_user.id)
-            print("1. Edit title")
-            print("2. Edit summary")
-            print("3. Edit content")
-            print("4. Change publication status")
-            edit_choice = input("Enter your choice: ")
+        article_id = int(input("Enter the number of the article you want to edit (or 0 to go back): "))
 
-            if edit_choice == "1":
-                new_title = input("Enter new article title: ")
-                update_query = "UPDATE articles SET title = %s WHERE id = %s"
-                self.db.cursor.execute(update_query, (new_title, article_id))
-            elif edit_choice == "2":
-                new_summary = input("Enter new article summary: ")
-                update_query = "UPDATE articles SET summary = %s WHERE id = %s"
-                self.db.cursor.execute(update_query, (new_summary, article_id))
-            elif edit_choice == "3":
-                new_content = input("Enter new article content: ")
-                update_query = "UPDATE articles SET content = %s WHERE id = %s"
-                self.db.cursor.execute(update_query, (new_content, article_id))
-            elif edit_choice == "4":
-                new_status = not article.is_published
-                update_query = "UPDATE articles SET is_published = %s WHERE id = %s"
-                self.db.cursor.execute(update_query, (new_status, article_id))
-                print(f"Article is now {'published' if new_status else 'unpublished'}")
-            else:
-                print("Invalid choice. Please try again")
+        if article_id == 0:
+            return
 
-            self.db.connection.commit()
+        if 1 <= article_id <= len(articles):
+            article = articles[article_id - 1]
+            while True:
+                print("\n1. Edit title")
+                print("2. Edit summary")
+                print("3. Edit content")
+                print("4. Change publication status")
+                print("5. Back to article management menu")
+                edit_choice = input("Enter your choice: ")
+
+                if edit_choice == "1":
+                    new_title = input("Enter new article title: ")
+                    update_query = "UPDATE articles SET title = %s WHERE id = %s"
+                    self.db.cursor.execute(update_query, (new_title, article[0]))
+                elif edit_choice == "2":
+                    new_summary = input("Enter new article summary: ")
+                    update_query = "UPDATE articles SET summary = %s WHERE id = %s"
+                    self.db.cursor.execute(update_query, (new_summary, article[0]))
+                elif edit_choice == "3":
+                    new_content = input("Enter new article content: ")
+                    update_query = "UPDATE articles SET content = %s WHERE id = %s"
+                    self.db.cursor.execute(update_query, (new_content, article[0]))
+                elif edit_choice == "4":
+                    new_status = not article[3]  # Toggle the current status
+                    update_query = "UPDATE articles SET is_published = %s WHERE id = %s"
+                    self.db.cursor.execute(update_query, (new_status, article[0]))
+                    print(f"Article is now {'published' if new_status else 'unpublished'}")
+                elif edit_choice == "5":
+                    break
+                else:
+                    print("Invalid choice. Please try again")
+
+                self.db.connection.commit()
+
+            print("Returning to article management menu...")
         else:
             print("Invalid article number.")
 
