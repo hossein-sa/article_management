@@ -57,7 +57,7 @@ Upon running the application, you'll be presented with a menu:
 Contributions to improve the Article Management System are welcome. Please feel free to fork the repository, make changes, and submit a pull request.
 
 ## License
-[Specify your license here, e.g., MIT License]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 Hossein Sadeghi - [GitHub](https://github.com/hossein-sa)
